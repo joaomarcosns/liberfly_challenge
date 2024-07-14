@@ -60,7 +60,7 @@ class Post extends Model
      */
     protected $fillable = [
         'title',
-        'name',
+        'description',
         'status',
         'user_id',
         'published_at',

@@ -156,6 +156,63 @@
                         "bearerAuth": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Store a new post",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "93b52e586e6f00335ba67dc7f6605613",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post created successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
@@ -193,6 +250,27 @@
                     "password_confirmation": {
                         "type": "string",
                         "example": "123456"
+                    }
+                },
+                "type": "object"
+            },
+            "StorePostRequest": {
+                "title": "Store Post Request",
+                "required": [
+                    "title",
+                    "content",
+                    "status"
+                ],
+                "properties": {
+                    "title": {
+                        "description": "The title of the post",
+                        "type": "string",
+                        "example": "Example Title"
+                    },
+                    "description": {
+                        "description": "The content of the post",
+                        "type": "string",
+                        "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                     }
                 },
                 "type": "object"
