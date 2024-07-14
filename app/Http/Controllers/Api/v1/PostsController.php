@@ -89,7 +89,12 @@ class PostsController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        Post::query()->create($request->validated());
+        $user = auth()->user();
+
+        $postData = $request->validated();
+        $postData['user_id'] = $user->id;
+
+        Post::query()->create($postData);
 
         return response()->json([
             'message' => 'Post created successfully',
@@ -149,7 +154,79 @@ class PostsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a specific post.
+     *
+     * @param  \App\Http\Requests\UpdatePostRequest  $request
+     * @param  int  $post_id
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Put(
+     *     path="/api/v1/posts/{post_id}",
+     *     tags={"Posts"},
+     *     summary="Update a post",
+     *     operationId="updatePost",
+     *     @OA\Parameter(
+     *         name="post_id",
+     *         in="path",
+     *         description="ID of post to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UpdatePostRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Post updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Post updated"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request body",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Validation failed"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Post not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Post not found"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Failed to update post"
+     *             )
+     *         )
+     *     ),
+     *      security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
      */
     public function update(UpdatePostRequest $request, $post_id)
     {
