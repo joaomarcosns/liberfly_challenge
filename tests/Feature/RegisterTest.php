@@ -3,7 +3,6 @@
 use App\Models\User;
 use Faker\Factory as Faker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,7 +11,7 @@ uses(RefreshDatabase::class);
 $URL = 'api/v1/auth/register';
 $faker = Faker::create();
 
-it('requires a name', function () use ($URL, $faker) {
+it('requires a name', function () use ($URL) {
     $response = $this->postJson($URL, [
         'name' => '',
         'email' => '',
@@ -188,8 +187,7 @@ it('can register a user', function () use ($URL, $faker) {
 
     $response->assertStatus(Response::HTTP_CREATED)
         ->assertJson(
-            fn (AssertableJson $json) =>
-            $json->where('message', 'Usuário cadastrado com sucesso')
+            fn (AssertableJson $json) => $json->where('message', 'Usuário cadastrado com sucesso')
                 ->etc()
         );
 });
