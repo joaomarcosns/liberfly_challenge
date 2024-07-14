@@ -156,7 +156,6 @@ class PostsController extends Controller
     /**
      * Update a specific post.
      *
-     * @param  \App\Http\Requests\UpdatePostRequest  $request
      * @param  int  $post_id
      * @return \Illuminate\Http\JsonResponse
      *
@@ -165,24 +164,31 @@ class PostsController extends Controller
      *     tags={"Posts"},
      *     summary="Update a post",
      *     operationId="updatePost",
+     *
      *     @OA\Parameter(
      *         name="post_id",
      *         in="path",
      *         description="ID of post to update",
      *         required=true,
+     *
      *         @OA\Schema(
      *             type="integer",
      *             format="int64"
      *         )
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(ref="#/components/schemas/UpdatePostRequest")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Post updated successfully",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(
      *                 property="error",
      *                 type="string",
@@ -190,10 +196,13 @@ class PostsController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=400,
      *         description="Invalid request body",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(
      *                 property="error",
      *                 type="string",
@@ -201,10 +210,13 @@ class PostsController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Post not found",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(
      *                 property="error",
      *                 type="string",
@@ -212,10 +224,13 @@ class PostsController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=500,
      *         description="Internal server error",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(
      *                 property="error",
      *                 type="string",
