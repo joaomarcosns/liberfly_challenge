@@ -26,6 +26,7 @@ class PostFactory extends Factory
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
             'status' => $status,
+            'published_at' => $status->value == 'published' ? now() : null,
             'user_id' => function () {
                 return \App\Models\User::factory()->create()->id;
             },

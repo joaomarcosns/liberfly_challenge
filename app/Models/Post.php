@@ -21,6 +21,7 @@ class Post extends Model
         'name',
         'status',
         'user_id',
+        'published_at',
     ];
 
     /**
