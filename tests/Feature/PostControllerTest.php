@@ -349,6 +349,31 @@ it('title field 3 min length in update post', function () use ($faker) {
     ]);
 });
 
+it('updates a post different user', function () {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    $user2 = User::factory()->create();
+
+    // Criar um post associado ao usuário
+    $post = Post::factory()->create(['user_id' => $user2->id]);
+
+    // Simular requisição para atualizar o post
+    $response = $this->putJson(route('posts.update', ['post_id' => $post->id]), [
+        'title' => 'Novo título do post',
+        'description' => 'Novo conteúdo do post',
+    ]);
+
+    // Verificar se a resposta está correta
+    $response->assertStatus(Response::HTTP_NOT_FOUND)
+        ->assertJson([
+            'error' => 'Post not found',
+        ]);
+});
+
 it('updates a post successfully', function () {
     // Criar um usuário para autenticar
     $user = User::factory()->create();

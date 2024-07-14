@@ -184,7 +184,7 @@ class PostsController extends Controller
      *         description="Post updated successfully",
      *         @OA\JsonContent(
      *             @OA\Property(
-     *                 property="message",
+     *                 property="error",
      *                 type="string",
      *                 example="Post updated"
      *             )
@@ -236,7 +236,7 @@ class PostsController extends Controller
 
             if ($post->user_id != $user->id) {
                 return response()->json([
-                    'message' => 'Post not found',
+                    'error' => 'Post not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
