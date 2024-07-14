@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *     schema="StorePostRequest",
  *     title="Store Post Request",
  *     required={"title", "content", "status"},
+ *
  *     @OA\Property(
  *         property="title",
  *         type="string",
@@ -42,7 +43,7 @@ class StorePostRequest extends FormRequest
     {
         return [
             'title' => ['required', 'max:255', 'min:3'],
-            'description' => ['required']
+            'description' => ['required'],
         ];
     }
 }

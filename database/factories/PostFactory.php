@@ -22,6 +22,7 @@ class PostFactory extends Factory
             PostStatusEnum::PUBLISHED,
             PostStatusEnum::ARCHIVED,
         ]);
+
         return [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,

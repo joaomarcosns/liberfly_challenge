@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * @OA\Schema(
  *   schema="LoginRequest",
+ *
  *   @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
  *   @OA\Property(property="password", type="string", example="123456"),
  * )

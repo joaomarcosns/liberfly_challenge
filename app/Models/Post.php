@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 /**
  * @OA\Schema(
  *      schema="Post",
+ *
  *      @OA\Property(
  *          property="id",
  *          type="integer",
@@ -81,7 +81,7 @@ class Post extends Model
     /**
      * Scope para buscar posts com status 'published'.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePublished($query)

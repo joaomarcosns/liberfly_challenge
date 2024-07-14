@@ -12,7 +12,7 @@ $URL = 'api/v1/auth/login';
 $faker = Faker::create();
 
 it('email max 255', function () use ($URL) {
-    $email = str_repeat('a', 256) . '@example.com';
+    $email = str_repeat('a', 256).'@example.com';
     $response = $this->postJson($URL, [
         'email' => $email,
         'password' => 'password',
@@ -32,7 +32,7 @@ it('email min 10', function () use ($URL) {
         ->assertJsonValidationErrors('email');
 });
 
-it('requires a valid email', function () use ($URL, $faker) {
+it('requires a valid email', function () use ($URL) {
     $response = $this->postJson($URL, [
         'email' => 'not-an-email',
         'password' => 'password',
@@ -91,14 +91,13 @@ it('should authenticate user and return token', function () use ($URL, $faker) {
 
     $user = User::factory()->create([
         'email' => $faker->safeEmail(),
-        'password' => $password
+        'password' => $password,
     ]);
 
     $response = $this->postJson($URL, [
         'email' => $user->email,
         'password' => $password,
     ]);
-
 
     $response->assertStatus(Response::HTTP_OK)
         ->assertJsonStructure([

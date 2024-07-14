@@ -5,7 +5,6 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -13,6 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @OA\Schema(
  *   schema="User",
+ *
  *   @OA\Property(property="id", type="integer", example=999),
  *   @OA\Property(property="name", type="string", example="Joe Snow"),
  *   @OA\Property(property="email", type="string", example="joe@example.com"),
@@ -22,7 +22,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.

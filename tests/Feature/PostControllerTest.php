@@ -3,8 +3,8 @@
 use App\Enums\PostStatusEnum;
 use App\Models\Post;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Faker\Factory as Faker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Symfony\Component\HttpFoundation\Response;
@@ -81,7 +81,7 @@ it('title field max 255 length', function () use ($URL, $faker) {
 
     $title = str_repeat('a', 256);
     $userData = [
-        'title' =>  $title,
+        'title' => $title,
         'description' => $faker->text(256),
     ];
 
@@ -109,7 +109,7 @@ it('title field 3 min length', function () use ($URL, $faker) {
     $title = str_repeat('a', 2);
 
     $userData = [
-        'title' =>  $title,
+        'title' => $title,
         'description' => $faker->text(256),
     ];
 
@@ -143,7 +143,7 @@ it('returns post successfully', function () {
     // Verifica se a resposta está correta
     $response->assertStatus(Response::HTTP_OK)
         ->assertJsonStructure([
-            'data'
+            'data',
         ]);
 });
 
@@ -164,7 +164,7 @@ it('returns error when post not found', function () {
     // Verifica se a resposta está correta
     $response->assertStatus(Response::HTTP_NOT_FOUND)
         ->assertJson([
-            'error' => 'Post not found'
+            'error' => 'Post not found',
         ]);
 
     // Verifica se o campo 'data' não está presente no JSON de resposta
@@ -244,12 +244,12 @@ it('should archive a post', function () {
 
     $response->assertStatus(Response::HTTP_OK)
         ->assertJson([
-            'message' => 'Post archived'
+            'message' => 'Post archived',
         ]);
 
     $this->assertDatabaseHas('posts', [
         'id' => $post->id,
-        'status' => PostStatusEnum::ARCHIVED
+        'status' => PostStatusEnum::ARCHIVED,
     ]);
 });
 
@@ -265,12 +265,11 @@ it('should return error if post is already archived', function () {
 
     $response->assertStatus(Response::HTTP_BAD_REQUEST)
         ->assertJson([
-            'error' => 'Post already archived'
+            'error' => 'Post already archived',
         ]);
 });
 
-
-it('requires a title and description in update post ', function () use ($URL) {
+it('requires a title and description in update post ', function () {
     // Criar um usuário para autenticar
     $user = User::factory()->create();
 
@@ -280,7 +279,7 @@ it('requires a title and description in update post ', function () use ($URL) {
     $post = Post::factory()->create(['user_id' => $user->id]);
 
     $userData = [
-        'title' =>  '',
+        'title' => '',
         'description' => '',
     ];
 
@@ -290,7 +289,7 @@ it('requires a title and description in update post ', function () use ($URL) {
         ->assertJsonValidationErrors('title');
 });
 
-it('title field max 255 length in update post', function () use ($URL, $faker) {
+it('title field max 255 length in update post', function () use ($faker) {
     // Criar um usuário para autenticar
     $user = User::factory()->create();
 
@@ -302,10 +301,9 @@ it('title field max 255 length in update post', function () use ($URL, $faker) {
     $post = Post::factory()->create(['user_id' => $user->id]);
 
     $userData = [
-        'title' =>  $title,
+        'title' => $title,
         'description' => $faker->text(256),
     ];
-
 
     $response = $this->putJson(route('posts.update', ['post_id' => $post->id]), $userData);
 
@@ -321,7 +319,7 @@ it('title field max 255 length in update post', function () use ($URL, $faker) {
     ]);
 });
 
-it('title field 3 min length in update post', function () use ($URL, $faker) {
+it('title field 3 min length in update post', function () use ($faker) {
     // Criar um usuário para autenticar
     $user = User::factory()->create();
 
@@ -333,10 +331,9 @@ it('title field 3 min length in update post', function () use ($URL, $faker) {
     $post = Post::factory()->create(['user_id' => $user->id]);
 
     $userData = [
-        'title' =>  $title,
+        'title' => $title,
         'description' => $faker->text(256),
     ];
-
 
     $response = $this->putJson(route('posts.update', ['post_id' => $post->id]), $userData);
 
@@ -365,7 +362,7 @@ it('updates a post successfully', function () {
     // Simular requisição para atualizar o post
     $response = $this->putJson(route('posts.update', ['post_id' => $post->id]), [
         'title' => 'Novo título do post',
-        'description' => 'Novo conteúdo do post'
+        'description' => 'Novo conteúdo do post',
     ]);
 
     // Verificar se a resposta está correta
@@ -378,6 +375,6 @@ it('updates a post successfully', function () {
     $this->assertDatabaseHas('posts', [
         'id' => $post->id,
         'title' => 'Novo título do post',
-        'description' => 'Novo conteúdo do post'
+        'description' => 'Novo conteúdo do post',
     ]);
 });

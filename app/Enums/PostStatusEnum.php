@@ -8,7 +8,6 @@ enum PostStatusEnum: string
     case PUBLISHED = 'published';
     case ARCHIVED = 'archived';
 
-
     public function getName(): string
     {
         return match ($this) {
@@ -24,7 +23,7 @@ enum PostStatusEnum: string
         return [
             self::DRAFT,
             self::PUBLISHED,
-            self::ARCHIVED
+            self::ARCHIVED,
         ];
     }
 
