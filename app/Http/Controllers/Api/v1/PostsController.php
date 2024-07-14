@@ -86,12 +86,39 @@ class PostsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/api/v1/posts/{post_id}",
+     *     tags={"Posts"},
+     *     summary="Get a specific post",
+     *     description="Returns a specific post by ID",
+     *     @OA\Parameter(
+     *         name="post_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the post",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Post")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Post not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Post not found")
+     *         )
+     *     ),
+     *      security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
      */
     public function show(int $post_id)
     {
         try {
-            $post = Post::findOrFail($post_id);
+            $post = Post::with(['user:id,name,email'])->findOrFail($post_id);
             return response()->json([
                 'data' => $post
             ], Response::HTTP_OK);
