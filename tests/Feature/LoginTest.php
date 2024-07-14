@@ -62,9 +62,33 @@ it('password required', function () use ($URL, $faker) {
     ]);
 });
 
+it('password min 6', function () use ($URL, $faker) {
+    $password = str_repeat('a', 5);
+
+    $userData = [
+        'name' => $faker->name(),
+        'email' => $faker->email(),
+        'password' => $password,
+        'password_confirmation' => $password,
+    ];
+
+    $response = $this->postJson($URL, $userData);
+
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+        ->assertJson(
+            fn (AssertableJson $json) => $json->has('errors.password')
+                ->where('errors.password.0', 'The password field must be at least 6 characters.')
+                ->etc()
+        );
+
+    $this->assertDatabaseMissing('users', [
+        'password' => $userData['password'],
+    ]);
+});
+
 it('should authenticate user and return token', function () use ($URL, $faker) {
     $password = $faker->password(11);
-    
+
     $user = User::factory()->create([
         'email' => $faker->safeEmail(),
         'password' => $password
