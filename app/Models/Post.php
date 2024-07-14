@@ -7,6 +7,48 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
+/**
+ * @OA\Schema(
+ *      schema="Post",
+ *      @OA\Property(
+ *          property="id",
+ *          type="integer",
+ *          example=1
+ *      ),
+ *      @OA\Property(
+ *          property="title",
+ *          type="string",
+ *          example="Example Post"
+ *      ),
+ *      @OA\Property(
+ *          property="name",
+ *          type="string",
+ *          example="John Doe"
+ *      ),
+ *      @OA\Property(
+ *          property="status",
+ *          type="string",
+ *          example="published"
+ *      ),
+ *      @OA\Property(
+ *          property="user_id",
+ *          type="integer",
+ *          example=1
+ *      ),
+ *      @OA\Property(
+ *          property="published_at",
+ *          type="string",
+ *          format="date-time",
+ *          example="2024-07-15T12:00:00Z"
+ *      ),
+ *      @OA\Property(
+ *          property="user",
+ *          type="object",
+ *          ref="#/components/schemas/User"
+ *      )
+ * )
+ */
 class Post extends Model
 {
     use HasFactory;
@@ -35,7 +77,7 @@ class Post extends Model
             'status' => PostStatusEnum::class,
         ];
     }
-    
+
     /**
      * Scope para buscar posts com status 'published'.
      *

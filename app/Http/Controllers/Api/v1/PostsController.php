@@ -6,10 +6,30 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\SecurityScheme(
+ *      securityScheme="bearerAuth",
+ *      type="http",
+ *      scheme="bearer",
+ *      bearerFormat="JWT"
+ * )
+ */
 class PostsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *      path="/api/v1/posts",
+     *      operationId="getPostsList",
+     *      tags={"Posts"},
+     *      summary="Get list of published posts",
+     *      description="Returns a list of published posts with basic user information",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/Post")
+     *      ),
+     *      security={{"bearerAuth": {}}}
+     * )
      */
     public function index()
     {
