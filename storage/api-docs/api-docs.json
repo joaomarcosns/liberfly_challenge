@@ -1,18 +1,75 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My API",
-        "description": "This is the API documentation for my application",
+        "title": "Your API Title",
+        "description": "Description of your API",
         "contact": {
-            "email": "joaomarcosnsdev@gmail.com"
+            "email": "contact@example.com"
         },
         "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            "name": "MIT License",
+            "url": "https://opensource.org/licenses/MIT"
         },
         "version": "1.0.0"
     },
     "paths": {
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user",
+                "description": "Authenticate user and return JWT token",
+                "operationId": "a8c063a2bfd105a3de9756a21fb94f5a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "Bearer eyJhbGciOiJIUzI1NiIsIn..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid username or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid username or password"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/auth/register": {
             "post": {
                 "tags": [
@@ -73,44 +130,24 @@
                     }
                 }
             }
-        },
-        "/api/v1/users": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Obter lista de usuários",
-                "description": "Retorna uma lista de usuários",
-                "operationId": "cba27bd95cc6ea326d42054f312aeca8",
-                "responses": {
-                    "200": {
-                        "description": "Operação bem-sucedida",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/User"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Não autorizado"
-                    },
-                    "403": {
-                        "description": "Proibido"
-                    },
-                    "404": {
-                        "description": "Não encontrado"
-                    }
-                }
-            }
         }
     },
     "components": {
         "schemas": {
+            "LoginRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "123456"
+                    }
+                },
+                "type": "object"
+            },
             "RegisterRequest": {
                 "properties": {
                     "name": {
@@ -164,10 +201,6 @@
         {
             "name": "Auth",
             "description": "Auth"
-        },
-        {
-            "name": "User",
-            "description": "User"
         }
     ]
 }
