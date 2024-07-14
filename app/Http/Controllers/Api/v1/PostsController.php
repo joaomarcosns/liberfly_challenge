@@ -139,7 +139,49 @@ class PostsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @OA\Patch(
+     *     path="/api/v1/posts/{post_id}/published",
+     *     summary="Publish a post",
+     *     tags={"Posts"},
+     *     @OA\Parameter(
+     *         name="post_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the post to publish",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Post successfully published",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Post published")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Post already published",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Post already published")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Post not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Post not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to publish post",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Failed to publish post")
+     *         )
+     *     ),
+     *      security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
      */
     public function published(int $post_id)
     {
