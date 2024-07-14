@@ -187,7 +187,7 @@ it('can register a user', function () use ($URL, $faker) {
 
     $response->assertStatus(Response::HTTP_CREATED)
         ->assertJson(
-            fn (AssertableJson $json) => $json->where('message', 'Usuário cadastrado com sucesso')
+            fn (AssertableJson $json) => $json->where('message', 'User registered successfully')
                 ->etc()
         );
 });
