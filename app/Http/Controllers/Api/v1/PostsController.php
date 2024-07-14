@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Enums\PostStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -133,7 +134,7 @@ class PostsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $post_id)
+    public function update(UpdatePostRequest $request, $post_id)
     {
         try {
             $user = auth()->user();
@@ -144,8 +145,8 @@ class PostsController extends Controller
                     'message' => 'Post not found'
                 ], Response::HTTP_NOT_FOUND);
             }
-
-            $post->update($request->validate());
+            
+            $post->update($request->validated());
 
             return response()->json([
                 'message' => 'Post update'

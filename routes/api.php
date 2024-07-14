@@ -18,6 +18,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::get('/{post_id}', 'show')->name('show');
+            Route::put('/{post_id}', 'update')->name('update');
             Route::patch('/{post_id}/published', 'published')->name('published');
             Route::patch('/{post_id}/archive', 'archive')->name('archive');
         });

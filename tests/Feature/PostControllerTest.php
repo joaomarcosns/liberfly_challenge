@@ -268,3 +268,116 @@ it('should return error if post is already archived', function () {
             'error' => 'Post already archived'
         ]);
 });
+
+
+it('requires a title and description in update post ', function () use ($URL) {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    $post = Post::factory()->create(['user_id' => $user->id]);
+
+    $userData = [
+        'title' =>  '',
+        'description' => '',
+    ];
+
+    $response = $this->putJson(route('posts.update', ['post_id' => $post->id]), $userData);
+
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+        ->assertJsonValidationErrors('title');
+});
+
+it('title field max 255 length in update post', function () use ($URL, $faker) {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    $title = str_repeat('a', 256);
+
+    $post = Post::factory()->create(['user_id' => $user->id]);
+
+    $userData = [
+        'title' =>  $title,
+        'description' => $faker->text(256),
+    ];
+
+
+    $response = $this->putJson(route('posts.update', ['post_id' => $post->id]), $userData);
+
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+        ->assertJson(
+            fn (AssertableJson $json) => $json->has('errors.title')
+                ->where('errors.title.0', 'The title field must not be greater than 255 characters.')
+                ->etc()
+        );
+
+    $this->assertDatabaseMissing('posts', [
+        'title' => $userData['title'],
+    ]);
+});
+
+it('title field 3 min length in update post', function () use ($URL, $faker) {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    $title = str_repeat('a', 2);
+
+    $post = Post::factory()->create(['user_id' => $user->id]);
+
+    $userData = [
+        'title' =>  $title,
+        'description' => $faker->text(256),
+    ];
+
+
+    $response = $this->putJson(route('posts.update', ['post_id' => $post->id]), $userData);
+
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+        ->assertJson(
+            fn (AssertableJson $json) => $json->has('errors.title')
+                ->where('errors.title.0', 'The title field must be at least 3 characters.')
+                ->etc()
+        );
+
+    $this->assertDatabaseMissing('posts', [
+        'title' => $userData['title'],
+    ]);
+});
+
+it('updates a post successfully', function () {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    // Criar um post associado ao usuário
+    $post = Post::factory()->create(['user_id' => $user->id]);
+
+    // Simular requisição para atualizar o post
+    $response = $this->putJson(route('posts.update', ['post_id' => $post->id]), [
+        'title' => 'Novo título do post',
+        'description' => 'Novo conteúdo do post'
+    ]);
+
+    // Verificar se a resposta está correta
+    $response->assertStatus(Response::HTTP_OK)
+        ->assertJson([
+            'message' => 'Post update',
+        ]);
+
+    // Verificar se o post foi atualizado no banco de dados
+    $this->assertDatabaseHas('posts', [
+        'id' => $post->id,
+        'title' => 'Novo título do post',
+        'description' => 'Novo conteúdo do post'
+    ]);
+});
