@@ -35,6 +35,17 @@ class Post extends Model
             'status' => PostStatusEnum::class,
         ];
     }
+    
+    /**
+     * Scope para buscar posts com status 'published'.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('status', 'published');
+    }
 
     /**
      * Get the user that owns the wallet.
