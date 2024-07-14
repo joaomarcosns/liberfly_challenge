@@ -14,9 +14,10 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::controller(PostsController::class)->name('posts')->prefix('posts')->group(function () {
-            Route::get('/', 'index');
-            Route::post('/', 'store');
+        Route::controller(PostsController::class)->name('posts.')->prefix('posts')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{post_id}', 'show')->name('show');
         });
 
         Route::get('/user', function (Request $request) {

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @OA\SecurityScheme(
@@ -38,7 +40,7 @@ class PostsController extends Controller
 
         return response()->json([
             'data' => $posts
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -80,15 +82,24 @@ class PostsController extends Controller
 
         return response()->json([
             'message' => 'Post created successfully'
-        ]);
+        ], Response::HTTP_CREATED);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(int $post_id)
     {
-        //
+        try {
+            $post = Post::findOrFail($post_id);
+            return response()->json([
+                'data' => $post
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Post not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**

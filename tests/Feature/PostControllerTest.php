@@ -125,3 +125,47 @@ it('title field 3 min length', function () use ($URL, $faker) {
         'title' => $userData['title'],
     ]);
 });
+
+it('returns post successfully', function () {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    // Cria um post
+    $post = Post::factory()->create();
+
+    // Faz uma requisição GET para o endpoint show
+    $response = $this->getJson(route('posts.show', ['post_id' => $post->id]));
+
+    // Verifica se a resposta está correta
+    $response->assertStatus(Response::HTTP_OK)
+        ->assertJsonStructure([
+            'data'
+        ]);
+});
+
+it('returns error when post not found', function () {
+
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    // Cria um post fake com um ID que você pode garantir que não existe
+    $nonExistentPostId = 9999;
+
+    // Faz uma requisição GET para o ID que não existe
+    $response = $this->getJson(route('posts.show', ['post_id' => $nonExistentPostId]));
+
+    // Verifica se a resposta está correta
+    $response->assertStatus(Response::HTTP_NOT_FOUND)
+        ->assertJson([
+            'error' => 'Post not found'
+        ]);
+
+    // Verifica se o campo 'data' não está presente no JSON de resposta
+    $response->assertJsonMissing(['data']);
+});

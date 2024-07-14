@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->enum('status', array_column(PostStatusEnum::cases(), 'value'));
+            $table->enum('status', array_column(PostStatusEnum::cases(), 'value'))->default(PostStatusEnum::DRAFT->value);
             $table->foreignId('user_id')->nullable()->constrained('users')->references('id')->cascadeOnDelete();
             $table->index('user_id');
             $table->timestamps();
