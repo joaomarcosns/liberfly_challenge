@@ -231,3 +231,40 @@ it('should return error if post does not exist', function () {
     $response->assertStatus(Response::HTTP_NOT_FOUND)
         ->assertJson(['error' => 'Post not found']);
 });
+
+it('should archive a post', function () {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+    // Cria um post não publicado
+    $post = Post::factory()->create(['status' => PostStatusEnum::DRAFT]);
+    $response = $this->patchJson(route('posts.archive', ['post_id' => $post->id]));
+
+    $response->assertStatus(Response::HTTP_OK)
+        ->assertJson([
+            'message' => 'Post archived'
+        ]);
+
+    $this->assertDatabaseHas('posts', [
+        'id' => $post->id,
+        'status' => PostStatusEnum::ARCHIVED
+    ]);
+});
+
+it('should return error if post is already archived', function () {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    $post = Post::factory()->create(['status' => PostStatusEnum::ARCHIVED]);
+    $response = $this->patchJson(route('posts.archive', ['post_id' => $post->id]));
+
+    $response->assertStatus(Response::HTTP_BAD_REQUEST)
+        ->assertJson([
+            'error' => 'Post already archived'
+        ]);
+});

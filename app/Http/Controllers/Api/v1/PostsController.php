@@ -133,9 +133,32 @@ class PostsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, int $post_id)
     {
-        //
+        try {
+            $user = auth()->user();
+            $post = Post::findOrFail($post_id);
+
+            if ($post->user_id !=  $user->id) {
+                return response()->json([
+                    'message' => 'Post not found'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            $post->update($request->validate());
+
+            return response()->json([
+                'message' => 'Post update'
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Post not found'
+            ], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to publish post'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -214,10 +237,85 @@ class PostsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Archive a post by its ID.
+     *
+     * @param int $post_id ID of the post to be archived
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Patch(
+     *      path="/api/v1/posts/{post_id}/archive",
+     *      tags={"Posts"},
+     *      summary="Archive a post by its ID",
+     *      operationId="archivePost",
+     *      @OA\Parameter(
+     *          name="post_id",
+     *          in="path",
+     *          required=true,
+     *          description="ID of the post to archive",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Post archived successfully",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Post archived")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Post already archived",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="error", type="string", example="Post already archived")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Post not found",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="error", type="string", example="Post not found")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Failed to archive post",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="error", type="string", example="Failed to archive post")
+     *          )
+     *      ),
+     *      security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
      */
-    public function archived(int $post_id)
+    public function archive(int $post_id)
     {
-        //
+        try {
+            $post = Post::findOrFail($post_id);
+
+            if ($post->status === PostStatusEnum::ARCHIVED) {
+                return response()->json([
+                    'error' => 'Post already archived'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $post->update([
+                'status' => PostStatusEnum::ARCHIVED,
+            ]);
+
+            return response()->json([
+                'message' => 'Post archived'
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Post not found'
+            ], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to archived post'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
