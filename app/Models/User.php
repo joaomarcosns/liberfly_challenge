@@ -60,7 +60,7 @@ class User extends Authenticatable
     /**
      * Get the wallet associated with the user.
      */
-    public function wallet(): HasOne
+    public function post(): HasOne
     {
         return $this->hasOne(Post::class);
     }
