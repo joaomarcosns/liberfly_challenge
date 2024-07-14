@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Enums\PostStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
@@ -140,7 +141,40 @@ class PostsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function published(int $post_id)
+    {
+        try {
+            $post = Post::findOrFail($post_id);
+
+            if ($post->status === PostStatusEnum::PUBLISHED) {
+                return response()->json([
+                    'message' => 'Post already published'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $post->update([
+                'status' => PostStatusEnum::PUBLISHED,
+                'published_at' => now()
+            ]);
+
+            return response()->json([
+                'message' => 'Post published'
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Post not found'
+            ], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to publish post'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function archived(int $post_id)
     {
         //
     }

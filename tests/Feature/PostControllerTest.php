@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PostStatusEnum;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -168,4 +169,65 @@ it('returns error when post not found', function () {
 
     // Verifica se o campo 'data' não está presente no JSON de resposta
     $response->assertJsonMissing(['data']);
+});
+
+it('should publish a post', function () {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+    // Cria um post não publicado
+    $post = Post::factory()->create(['status' => PostStatusEnum::DRAFT]);
+
+    // Chama o endpoint da API para publicar o post
+    $response = $this->patchJson(route('posts.published', ['post_id' => $post->id]));
+
+    // Verifica se a resposta está correta
+    $response->assertStatus(Response::HTTP_OK)
+        ->assertJson(['message' => 'Post published']);
+
+    // Verifica se o post foi atualizado corretamente no banco de dados
+    $this->assertDatabaseHas('posts', [
+        'id' => $post->id,
+        'status' => PostStatusEnum::PUBLISHED,
+    ]);
+});
+
+it('should return error if post is already published', function () {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    // Cria um post já publicado
+    $post = Post::factory()->create(['status' => PostStatusEnum::PUBLISHED]);
+
+    // Chama o endpoint da API para publicar o post
+    $response = $this->patchJson(route('posts.published', ['post_id' => $post->id]));
+
+    // Verifica se a resposta está correta
+    $response->assertStatus(Response::HTTP_BAD_REQUEST)
+        ->assertJson(['message' => 'Post already published']);
+});
+
+it('should return error if post does not exist', function () {
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+
+    // Criar um usuário para autenticar
+    $user = User::factory()->create();
+
+    // Autenticar o usuário usando Sanctum
+    Sanctum::actingAs($user);
+    // Chama o endpoint da API para publicar um post que não existe
+    $response = $this->patchJson(route('posts.published', ['post_id' => 999]));
+
+    // Verifica se a resposta está correta
+    $response->assertStatus(Response::HTTP_NOT_FOUND)
+        ->assertJson(['error' => 'Post not found']);
 });
